@@ -13,8 +13,18 @@ if ($sqlConnection->connect_error) {
 	die("Connection failed: " . $conn->connect_error);
 } 
 
-$selectComments = "SELECT comments FROM sweetwater.sweetwater_test";
-$selectCommentsResults = $sqlConnection->query($selectComments);
+$selectCandyComments = "SELECT comments FROM sweetwater.sweetwater_test WHERE comments LIKE '%candy%'";
+$selectCandyResults = $sqlConnection->query($selectCandyComments);
+
+$selectCallComments = "SELECT comments FROM sweetwater.sweetwater_test WHERE comments LIKE '%call me%'";
+$selectCallResults = $sqlConnection->query($selectCallComments);
+
+$selectReferralComments = "SELECT * FROM sweetwater.sweetwater_test WHERE comments LIKE '%refer%'";
+$selectReferralResults = $sqlConnection->query($selectReferralComments);
+
+$selectSignatureComments = "SELECT * FROM sweetwater.sweetwater_test WHERE comments LIKE '%signature%'";
+$selectSignatureResults = $sqlConnection->query($selectSignatureComments);
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -92,6 +102,23 @@ $selectCommentsResults = $sqlConnection->query($selectComments);
 						a:hover img {
 								border: 2px solid #3399FF;
 						}
+						.tab button {
+							background-color: #aaa;
+							border: none;
+							outline: none;
+							cursor: pointer;
+							transition: 0.5s;
+							font-size: 25px;
+							}
+
+						.tab button:hover {
+						background-color: #eee;
+						}
+
+						.tabcontent {
+							display: none;
+							border: 1px solid #ccc;
+						}
 		/*]]>*/
 		</style>
 	</head>
@@ -101,10 +128,7 @@ $selectCommentsResults = $sqlConnection->query($selectComments);
 		</h1>
 		<div class="content">
 			<div class="content-middle">
-			</div>
 			<hr />
-			<div class="content-columns">
-				<div class="content-column-left">
 					<h2>
 						Task #1
 					</h2>
@@ -116,19 +140,62 @@ $selectCommentsResults = $sqlConnection->query($selectComments);
 					<br>- Comments about signature requirements upon delivery
 					<br>- Miscellaneous comments (everything else)
 					</p>
+
+				<div class="tab">
+					<button class="tabs" onclick="openTab(event, 'candytab')">Candy</button>
+					<button class="tabs" onclick="openTab(event, 'callstab')">Call Me/Don't Call Me</button>
+					<button class="tabs" onclick="openTab(event, 'referraltab')">Referrals</button>
+					<button class="tabs" onclick="openTab(event, 'signaturetab')">Signatures</button>
 				</div>
-				<div class="content-column-right">
-					<h2>
-						Comments About Candy:
-					</h2>
-						<?php while($row = $selectCommentsResults->fetch_assoc()) {
-							if(stripos($row["comments"], "candy") !== false)
+					<br>
+					<br>
+					<div id ="candytab" class= "tabcontent">
+						<h2> Comments About Candy: </h2>
+						<?php while($row = $selectCandyResults->fetch_assoc()) {
 								echo "<p>" . $row["comments"] . "</p>";
 						}?> 
-					<br>							
-				</div>
+					</div>
+					<div id ="callstab"  class="tabcontent">
+						<h2> Comments About Call Me /Don't Call: </h2>
+						<?php while($row = $selectCallResults->fetch_assoc()) {
+									echo "<p>" . $row["comments"] . "</p>";
+						}?> 		
+					</div>
+					<div id ="referraltab"  class="tabcontent">
+						<h2> Comments About Referrals: </h2>
+						<?php while($row = $selectReferralResults->fetch_assoc()) {
+									echo "<p>" . $row["comments"] . "</p>";
+						}?>	
+					</div>
+					<div id ="signaturetab"  class="tabcontent">
+						<h2> Comments About Signature: </h2>
+						<?php while($row = $selectSignatureResults->fetch_assoc()) {
+									echo "<p>" . $row["comments"] . "</p>";
+						}?>	
+					</div>
 			</div>
 		</div>
 		<div class="content"></div>
+
+		<script>
+			function openTab(evt, tabName) {
+			var i, tabcontent, tablinks;
+			tabcontent = document.getElementsByClassName("tabcontent");
+
+			for (i = 0; i < tabcontent.length; i++) {
+				tabcontent[i].style.display = "none";
+			}
+
+			tablinks = document.getElementsByClassName("tablinks");
+			for (i = 0; i < tablinks.length; i++) {
+				tablinks[i].className = tablinks[i].className.replace(" active", "");
+			}
+
+			document.getElementById(tabName).style.display = "block";
+			evt.currentTarget.className += " active";
+			}
+		</script>
+
 	</body>
+	
 </html>
