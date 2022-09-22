@@ -1,9 +1,9 @@
 # Nathan Dugan Devlog
 
-•Used http://www.devside.net/index.html as a quick way to setup a MySQL/PHP environment.
-•A bit rusty with PHP, had to get my bearings.
-•Initial commit was very very slow, my upload speed isn't that great. I hope that doesn't get counted against me. 
-•Fought with my VSC for a bit
+- Used http://www.devside.net/index.html as a quick way to setup a MySQL/PHP environment.
+- A bit rusty with PHP, had to get my bearings.
+- Initial commit was very very slow, my upload speed isn't that great. I hope that doesn't get counted against me. 
+- Fought with my VSC for a bit
 
 ### Task #1
 - Removed some boilerplate stuff, left some of the page formatting.
@@ -13,9 +13,10 @@
 - Call Me / Don't call me
     - Same as the candy, I query the comments containing  "call me" and add those to the page via a paragraph tag
 
+- Did similiar queries and steps for referrals and signatures.
+
 - I added tabs for better visualization of the grouping, I know the instructions said to not worry about design, but this was just a simple way of grouping.
 
-- Did the same for referrals and signatures.
 - When I got to the "everything else" portion I decided to store the unqiue selectors in a variable so that I could plug them into a 'NOT IN' query to get everything else.
 
 
