@@ -1,0 +1,16 @@
+Components/
+Config/
+Licenses/
+Logs/
+Resources/
+Temp/
+Tools/
+Versions/
+Vhosts/
+Websites/localhost/
+README.txt
+*.exe
+*.exe.config
+*.xml
+*.txt
+*.dll
