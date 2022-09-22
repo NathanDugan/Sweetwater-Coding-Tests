@@ -34,9 +34,15 @@ $selectReferralResults = $sqlConnection->query($selectReferralComments);
 $selectSignatureComments = $commentsSelector . $signatureSelector;
 $selectSignatureResults = $sqlConnection->query($selectSignatureComments);
 
-$selectEverythingElse = "SELECT comments FROM sweetwater.sweetwater_test WHERE comments NOT IN ($candySelector, $callSelector, $referralSelector, $signatureSelector)";
+$selectEverythingElse = "SELECT comments FROM sweetwater.sweetwater_test WHERE comments NOT LIKE $candySelector AND 
+																			   comments NOT LIKE $callSelector  AND 
+																			   comments NOT LIKE $referralSelector AND
+																		 	   comments NOT LIKE $signatureSelector";
 $selectEverythingElseResults = $sqlConnection->query($selectEverythingElse);
 
+//Get the whole row here, we want the orderid for this one.
+$selectCommentsWithDates = "SELECT * FROM sweetwater.sweetwater_test WHERE comments LIKE '%Ship Date:%'";
+$selectCommentsWithDatesResults = $sqlConnection->query($selectCommentsWithDates);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -141,9 +147,7 @@ $selectEverythingElseResults = $sqlConnection->query($selectEverythingElse);
 		<div class="content">
 			<div class="content-middle">
 			<hr />
-					<h2>
-						Task #1
-					</h2>
+					<h2> Task #1</h2>
 					<p>
 					Display the comments and group them into the following sections based on what the comment was about:
 					<br>- Comments about candy
@@ -193,6 +197,22 @@ $selectEverythingElseResults = $sqlConnection->query($selectEverythingElse);
 									echo "<p>" . $row["comments"] . "</p>";
 						}?>	
 					</div>
+
+					<h2> Task #2 </h2>
+					<p>
+					The shipdate_expected field is currently populated with no date (0000-00-00). Some of comments included an "Expected Ship Date" in the text. Please parse out the date from the text and properly update the shipdate_expected field in the table
+					</p>
+					<p>Any Errors will be shown below, otherwise the operation executed successfully.</p>
+					<?php while($row = $selectCommentsWithDatesResults->fetch_assoc()) {
+									$orderId = $row["orderid"];
+									$extractedDate = substr($row["comments"], strpos($row["comments"], "Date: ") + 6, 8);
+									$deprecationFix = str_replace("/", "-", $extractedDate);
+									$sql = "UPDATE sweetwater.sweetwater_test SET shipdate_expected='$deprecationFix' WHERE orderid=$orderId";
+									$result = $sqlConnection->query($sql);
+									if ($result === FALSE)
+										echo "Error updating record: orderid: $orderId" .  $sqlConnection->error . "<br>";
+						}?>	
+					<?php {$sqlConnection->close();}?> 
 			</div>
 		</div>
 		<div class="content"></div>
