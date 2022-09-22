@@ -13,17 +13,29 @@ if ($sqlConnection->connect_error) {
 	die("Connection failed: " . $conn->connect_error);
 } 
 
-$selectCandyComments = "SELECT comments FROM sweetwater.sweetwater_test WHERE comments LIKE '%candy%'";
+
+$commentsSelector = "SELECT comments FROM sweetwater.sweetwater_test WHERE comments LIKE ";
+
+$candySelector = "'%candy%'";
+$callSelector = "'%call me%'";
+$referralSelector = "'%refer%'";
+$signatureSelector = "'%signature%'";
+
+
+$selectCandyComments = $commentsSelector . $candySelector;
 $selectCandyResults = $sqlConnection->query($selectCandyComments);
 
-$selectCallComments = "SELECT comments FROM sweetwater.sweetwater_test WHERE comments LIKE '%call me%'";
+$selectCallComments = $commentsSelector . $callSelector;
 $selectCallResults = $sqlConnection->query($selectCallComments);
 
-$selectReferralComments = "SELECT * FROM sweetwater.sweetwater_test WHERE comments LIKE '%refer%'";
+$selectReferralComments = $commentsSelector . $referralSelector;
 $selectReferralResults = $sqlConnection->query($selectReferralComments);
 
-$selectSignatureComments = "SELECT * FROM sweetwater.sweetwater_test WHERE comments LIKE '%signature%'";
+$selectSignatureComments = $commentsSelector . $signatureSelector;
 $selectSignatureResults = $sqlConnection->query($selectSignatureComments);
+
+$selectEverythingElse = "SELECT comments FROM sweetwater.sweetwater_test WHERE comments NOT IN ($candySelector, $callSelector, $referralSelector, $signatureSelector)";
+$selectEverythingElseResults = $sqlConnection->query($selectEverythingElse);
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
@@ -104,7 +116,7 @@ $selectSignatureResults = $sqlConnection->query($selectSignatureComments);
 						}
 						.tab button {
 							background-color: #aaa;
-							border: none;
+							border: 1px solid;
 							outline: none;
 							cursor: pointer;
 							transition: 0.5s;
@@ -146,6 +158,8 @@ $selectSignatureResults = $sqlConnection->query($selectSignatureComments);
 					<button class="tabs" onclick="openTab(event, 'callstab')">Call Me/Don't Call Me</button>
 					<button class="tabs" onclick="openTab(event, 'referraltab')">Referrals</button>
 					<button class="tabs" onclick="openTab(event, 'signaturetab')">Signatures</button>
+					<button class="tabs" onclick="openTab(event, 'everythingElsetab')">Miscellaneous</button>
+					<button class="tabs" onclick="openTab(event, '')">X</button>
 				</div>
 					<br>
 					<br>
@@ -156,20 +170,26 @@ $selectSignatureResults = $sqlConnection->query($selectSignatureComments);
 						}?> 
 					</div>
 					<div id ="callstab"  class="tabcontent">
-						<h2> Comments About Call Me /Don't Call: </h2>
+						<h2>Comments About Call Me /Don't Call: </h2>
 						<?php while($row = $selectCallResults->fetch_assoc()) {
 									echo "<p>" . $row["comments"] . "</p>";
 						}?> 		
 					</div>
 					<div id ="referraltab"  class="tabcontent">
-						<h2> Comments About Referrals: </h2>
+						<h2>Comments About Referrals: </h2>
 						<?php while($row = $selectReferralResults->fetch_assoc()) {
 									echo "<p>" . $row["comments"] . "</p>";
 						}?>	
 					</div>
 					<div id ="signaturetab"  class="tabcontent">
-						<h2> Comments About Signature: </h2>
+						<h2>Comments About Signature: </h2>
 						<?php while($row = $selectSignatureResults->fetch_assoc()) {
+									echo "<p>" . $row["comments"] . "</p>";
+						}?>	
+					</div>
+					<div id ="everythingElsetab"  class="tabcontent">
+						<h2>Comments About Everything Else: </h2>
+						<?php while($row = $selectEverythingElseResults->fetch_assoc()) {
 									echo "<p>" . $row["comments"] . "</p>";
 						}?>	
 					</div>
