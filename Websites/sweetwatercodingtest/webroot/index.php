@@ -1,12 +1,20 @@
 <?php
-
-
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 //Connection Variables
-$servername = "localhost";
-$username = "username";
-$password = "password";
-$dbname = "myDB";
+$server = "localhost";
+$username = "root";
+$password = "";
+$database = "sweetwater";
 
+$sqlConnection = new mysqli($server, $username, $password, $database);
+if ($sqlConnection->connect_error) {
+	die("Connection failed: " . $conn->connect_error);
+} 
+
+$selectComments = "SELECT comments FROM sweetwater.sweetwater_test";
+$selectCommentsResults = $sqlConnection->query($selectComments);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -76,9 +84,6 @@ $dbname = "myDB";
 								float: left;
 								padding-bottom: 2em;
 						}
-						.content-columns>.content-column-left, .content-columns>.content-column-right {
-								/* Non-IE/Win */
-						}
 						img {
 								border: 2px solid #fff;
 								padding: 2px;
@@ -114,21 +119,13 @@ $dbname = "myDB";
 				</div>
 				<div class="content-column-right">
 					<h2>
-						If you are the website administrator:
+						Comments About Candy:
 					</h2>
-					<p>
-						You may now add content to the folder
-						<tt>C:\WebDeveloper\Websites\localhost\webroot\</tt>. Note that until
-						you do so, people visiting your website will see this page and
-						not your content. To remove this page, delete or replace file
-						<tt>C:\WebDeveloper\Websites\localhost\webroot\index.php</tt>.
-					</p>
-					<p>
-						Thanks for using <a href="http://www.devside.net/">Web.Developer Pro</a>, <a href="http://httpd.apache.org/">Apache</a>, <a href="https://www.php.net/">PHP</a> and MySQL!</p>
-					</p>
-					<p>
-						&nbsp;
-					</p>
+						<?php while($row = $selectCommentsResults->fetch_assoc()) {
+							if(stripos($row["comments"], "candy") !== false)
+								echo "<p>" . $row["comments"] . "</p>";
+						}?> 
+					<br>							
 				</div>
 			</div>
 		</div>
