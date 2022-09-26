@@ -24,3 +24,9 @@
 - For this one I know I wanted to grab all the rows that had a date within the comments. I did this by querying rows with '%Ship Date:%' in the comments.
 - After that it was a matter of going through each row, grabbing the order id and extracting the date, then updating the shipdate_expected column with the extracted date.
 - I got a warning from mySQL stating that the '/' separator is deprecated and I should use '-' instead. So I also did a str_replace to fix that from the extracted dates.
+
+### Feedback
+- The candy was a sneaky one, I searched for candy, candies, and random misspellings of candy I could think of. Looking at it again, I found a mention of Laffy Taffy, then it clicked, people probably mentioned specific candy by name. So I went line by line looking at the comments. I found mentions of Bit O Honey, Smarties, and Tootsie Rolls, in addition to the Laffy Taffy. There was a mention of just "taffy" so I'll account for that in my query. I beleive including those in my query should cover them all.
+- I can't believe I didn't notice the dates were not correct. For this one, I exploded the date string I extracted and just manually rearranged the date to the correct format
+MySql didn't seem to like 'mktime', using MySql's FROM_UNIXTIME made the date slightly off. I imagine this is a timezone issue. Instead of spending too much time on trying to convert
+timezones, I just passed in the string I rearranged.

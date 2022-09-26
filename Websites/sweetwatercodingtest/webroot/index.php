@@ -16,13 +16,17 @@ if ($sqlConnection->connect_error) {
 
 $commentsSelector = "SELECT comments FROM sweetwater.sweetwater_test WHERE comments LIKE ";
 
-$candySelector = "'%candy%'";
+$candySelector = "'%candy%' OR comments LIKE '%tootsie%' 
+							OR comments LIKE '%taffy%' 
+							OR comments LIKE '%honey%' 
+							OR comments LIKE '%smarties%' ";
+
 $callSelector = "'%call me%'";
 $referralSelector = "'%refer%'";
 $signatureSelector = "'%signature%'";
 
-
 $selectCandyComments = $commentsSelector . $candySelector;
+
 $selectCandyResults = $sqlConnection->query($selectCandyComments);
 
 $selectCallComments = $commentsSelector . $callSelector;
@@ -206,8 +210,9 @@ $selectCommentsWithDatesResults = $sqlConnection->query($selectCommentsWithDates
 					<?php while($row = $selectCommentsWithDatesResults->fetch_assoc()) {
 									$orderId = $row["orderid"];
 									$extractedDate = substr($row["comments"], strpos($row["comments"], "Date: ") + 6, 8);
-									$deprecationFix = str_replace("/", "-", $extractedDate);
-									$sql = "UPDATE sweetwater.sweetwater_test SET shipdate_expected='$deprecationFix' WHERE orderid=$orderId";
+									$separatedDate = explode('/', $extractedDate);
+									$date = $separatedDate[2] . $separatedDate[0] . $separatedDate[1];
+									$sql = "UPDATE sweetwater.sweetwater_test SET shipdate_expected='$date' WHERE orderid=$orderId";
 									$result = $sqlConnection->query($sql);
 									if ($result === FALSE)
 										echo "Error updating record: orderid: $orderId" .  $sqlConnection->error . "<br>";
